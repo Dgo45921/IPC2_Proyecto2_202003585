@@ -11,7 +11,7 @@ def main():
             print("Ingrese la ruta del xml:")
             ruta = input()
             ManejoXML.leer_xml(ruta)
-
+            
         elif opcion == "2":
             print("ver las ciudades")
         elif opcion == "3":

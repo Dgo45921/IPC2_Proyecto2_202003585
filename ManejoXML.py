@@ -25,7 +25,6 @@ def leer_xml(ruta):
                       int(militar.get("fila")), " y columna: ", int(militar.get("columna")))
 
         # encontramos cada robot
-        lista = raiz.findall("./robots/robot")
         for robot in raiz.findall("./robots/robot"):
             name = robot.find("nombre").text
             type_robot = robot.find("nombre").get("tipo")
