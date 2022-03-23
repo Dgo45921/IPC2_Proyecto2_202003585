@@ -1,4 +1,10 @@
 import xml.etree.ElementTree as ET
+from ListaCiudad import ListaCiudad
+from Matriz import Matriz
+from Celda import Celda
+from NodoInterno import NodoInterno
+
+lista_de_ciudades = ListaCiudad()
 
 
 def leer_xml(ruta):
@@ -13,10 +19,36 @@ def leer_xml(ruta):
             columns = int(ciudad.find("nombre").get("columnas"))
             print("Aqui comienza una nueva ciudad")
             print("Name ciudad: ", name, "filas ciudad: ", rows, "columnas ciudad: ", columns)
-
             # se encuentra cada fila asociada a cada ciudad
+            matriz_ciudad = Matriz()
             for fila in ciudad.findall("./fila"):
+                contador_columna = 1
+                texto_fila = fila.text.replace('"', "")
                 print("num de la fila: ", int(fila.get("numero")), "texto de la fila: ", fila.text)
+                if len(texto_fila) == columns:
+
+                    for caracter in texto_fila:
+                        nueva_celda = None
+                        if caracter == "*":
+                            nueva_celda = Celda("intransitable", False, 0)
+                        elif caracter == " ":
+                            nueva_celda = Celda("camino", True, 0)
+                        elif caracter == "E":
+                            nueva_celda = Celda("entrada", True, 0)
+                        elif caracter == "C":
+                            nueva_celda = Celda("civil", False, 0)
+                        elif caracter == "R":
+                            nueva_celda = Celda("recurso", False, 0)
+
+                        nodo_interno = NodoInterno(int(fila.get("numero")), contador_columna, nueva_celda)
+                        matriz_ciudad.insertar_nodo_interno(nodo_interno)
+                        contador_columna += 1
+                else:
+                    print("la cantidad de caracteres de la fila: ", fila.get("numero"), "no coincide con la cantidad de columnas de la ciudad")
+                    return
+
+
+
 
             # se encuentra cada unidad militar asociada a la ciudad
             for militar in ciudad.findall("./unidadMilitar"):

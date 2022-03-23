@@ -15,22 +15,22 @@ class ListaEncabezado:
             self.ultimo = nodo_insertado
         else:
 
-            if nodo_insertado._id < self.primero._id:
+            if nodo_insertado.id < self.primero.id:
                 nodo_insertado.siguiente = self.primero
                 self.primero = nodo_insertado
-            elif nodo_insertado._id > self.ultimo._id:
+            elif nodo_insertado.id > self.ultimo.id:
                 self.ultimo.siguiente = nodo_insertado
                 self.ultimo = nodo_insertado
             else:
                 actual = self.primero
                 while actual:
-                    if nodo_insertado._id < actual._id:
+                    if nodo_insertado.id < actual.id:
                         nodo_insertado.siguiente = actual
                         nodo_insertado.anterior = actual.anterior
                         actual.anterior.siguiente = nodo_insertado
                         actual.anterior = nodo_insertado
                         break
-                    elif nodo_insertado._id > actual._id:
+                    elif nodo_insertado.id > actual.id:
                         actual = actual.siguiente
                     else:
                         break
@@ -38,7 +38,7 @@ class ListaEncabezado:
     def check_encabezado(self, _id):
         actual = self.primero
         while actual:
-            if _id == actual._id:
+            if _id == actual.id:
                 return actual
             actual = actual.siguiente
         return None

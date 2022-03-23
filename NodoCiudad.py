@@ -1,6 +1,6 @@
 class NodoCiudad:
-    def __init__(self, ciudad=None, _id=None):
+    def __init__(self, ciudad=None, id=None, siguiente=None, anterior=None):
         self.ciudad = ciudad
-        self.siguiente = None
-        self.anterior = None
-        self._id = _id
+        self.siguiente = siguiente
+        self.anterior = anterior
+        self.id = id
