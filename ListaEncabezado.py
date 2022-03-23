@@ -16,9 +16,11 @@ class ListaEncabezado:
         else:
 
             if nodo_insertado.id < self.primero.id:
+                self.primero.anterior = nodo_insertado
                 nodo_insertado.siguiente = self.primero
                 self.primero = nodo_insertado
             elif nodo_insertado.id > self.ultimo.id:
+                nodo_insertado.anterior = self.ultimo
                 self.ultimo.siguiente = nodo_insertado
                 self.ultimo = nodo_insertado
             else:

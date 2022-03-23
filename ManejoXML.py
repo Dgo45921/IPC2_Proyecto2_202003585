@@ -7,20 +7,18 @@ from ListaRobot import ListaRobot
 from Robot import Robot
 from Ciudad import Ciudad
 
+xml_cargado = False
 lista_de_ciudades = ListaCiudad()
 lista_robots = ListaRobot()
 id_celda = 1
 
 
 def leer_xml(ruta):
-    global id_celda, lista_de_ciudades
+    global id_celda, lista_de_ciudades, xml_cargado
     try:
-        city_name = ""
-        rows = 0
-        columns = 0
         arbol = ET.parse(ruta)
         raiz = arbol.getroot()
-        #print(str(raiz.tag))
+        # print(str(raiz.tag))
         # se encuentran los datos de la ciudad
         for ciudad in raiz.findall("./listaCiudades/ciudad"):
             id_celda = 1
@@ -34,7 +32,7 @@ def leer_xml(ruta):
             for fila in ciudad.findall("./fila"):
                 contador_columna = 1
                 texto_fila = fila.text.replace('"', "")
-                print("num de la fila: ", int(fila.get("numero")), "texto de la fila: ", fila.text)
+                # print("num de la fila: ", int(fila.get("numero")), "texto de la fila: ", fila.text)
                 if len(texto_fila) == columns:
 
                     for caracter in texto_fila:
@@ -89,8 +87,9 @@ def leer_xml(ruta):
                 robot_nuevo = Robot(name, type_robot, capacity)
                 lista_robots.insertar_robot(robot_nuevo)
 
-        lista_robots.recorrer()
-        print("")
+        #lista_robots.recorrer()
+        print("Datos cargados con éxito")
+        xml_cargado = True
 
 
 

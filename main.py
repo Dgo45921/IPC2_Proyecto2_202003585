@@ -11,9 +11,14 @@ def main():
             print("Ingrese la ruta del xml:")
             ruta = input()
             ManejoXML.leer_xml(ruta)
-            
         elif opcion == "2":
-            print("ver las ciudades")
+            if ManejoXML.xml_cargado:
+                ManejoXML.lista_de_ciudades.muestra_ciudades()
+                print("Escoja una ciudad")
+                opcion = int(input())
+                ManejoXML.lista_de_ciudades.graficar(opcion)
+            else:
+                print("No hay ciudades cargadas")
         elif opcion == "3":
             print("sistema de control")
         elif opcion == "4":
