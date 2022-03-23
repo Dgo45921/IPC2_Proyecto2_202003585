@@ -89,6 +89,9 @@ def leer_xml(ruta):
                 robot_nuevo = Robot(name, type_robot, capacity)
                 lista_robots.insertar_robot(robot_nuevo)
 
+        lista_robots.recorrer()
+        print("")
+
 
 
 
