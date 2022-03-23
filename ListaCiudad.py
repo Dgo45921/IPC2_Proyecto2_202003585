@@ -9,11 +9,14 @@ class ListaCiudad:
 
     def insertar_ciudad(self, ciudad_ingresada):
         if self.primero is None:
-            self.primero = NodoCiudad(ciudad=ciudad_ingresada)
+            self.primero = self.ultimo = NodoCiudad(ciudad=ciudad_ingresada, id=self.size+1)
+
         else:
-            actual = NodoCiudad(ciudad=ciudad_ingresada, siguiente=self.primero)
-            self.primero.anterior = actual
-            self.primero = actual
+            actual = NodoCiudad(ciudad=ciudad_ingresada, id=self.size+1)
+            actual.anterior = self.ultimo
+            self.ultimo.siguiente = actual
+            self.ultimo = actual
+        self.size += 1
 
     def recorrer(self):
         pass

@@ -69,3 +69,29 @@ class Matriz:
                             break
                         else:
                             actual = actual.abajo
+
+    def obtener_nodo(self, x, y):
+        nodo_fila = self.filas.primero
+        while nodo_fila:
+            #print("fila: ", nodo_fila.id)
+            nodo_interno_actual = nodo_fila.acceso
+            while nodo_interno_actual:
+                #print("Nodo en fila: ", nodo_interno_actual.x, "nodo en col: ", nodo_interno_actual.y, "celda tipo: ", nodo_interno_actual.celda.tipo, "id celda", nodo_interno_actual.celda.id)
+                if nodo_interno_actual.x == x and nodo_interno_actual.y == y:
+                    return nodo_interno_actual
+                nodo_interno_actual = nodo_interno_actual.derecha
+
+            nodo_fila = nodo_fila.siguiente
+        return None
+
+    def recorrer(self):
+        nodo_fila = self.filas.primero
+        while nodo_fila:
+            print("fila: ", nodo_fila.id)
+            nodo_interno_actual = nodo_fila.acceso
+            while nodo_interno_actual:
+                print("Nodo en fila: ", nodo_interno_actual.x, "nodo en col: ", nodo_interno_actual.y, "celda tipo: ",
+                      nodo_interno_actual.celda.tipo, "id celda", nodo_interno_actual.celda.id)
+                nodo_interno_actual = nodo_interno_actual.derecha
+            nodo_fila = nodo_fila.siguiente
+
