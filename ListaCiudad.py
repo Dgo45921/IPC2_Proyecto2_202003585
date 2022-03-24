@@ -1,5 +1,5 @@
 from NodoCiudad import NodoCiudad
-
+from os import system
 
 class ListaCiudad:
     def __init__(self):
@@ -50,11 +50,13 @@ class ListaCiudad:
 
 
         cadena = '''  
-        digraph html {
-         tabla [shape=none, margin=0, label=<
-         <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="4">\n
-    
-            '''
+    digraph html {
+    labelloc="t";''' + '''
+    label=''' + '"' + ciudad.name + '";' + """
+    tabla [shape=none, margin=0, label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="4">\n"""
+
+
         cadena += "<TR>\n"
         cadena += """<TD CELLPADDING="0.1"></TD>\n"""
         for i in range(columns):
@@ -91,7 +93,13 @@ class ListaCiudad:
 
 
         cadena += "</TABLE>>];}\n"
-        print(cadena)
+        nuevo_archivo = open("texto_dot.dot", "w")
+        nuevo_archivo.write(cadena)
+        nuevo_archivo.close()
+
+        system("dot -Tpng " + "texto_dot.dot" + " -o " + "grafica.png")
+        system("xdg-open grafica.png")
+
 
 
 
