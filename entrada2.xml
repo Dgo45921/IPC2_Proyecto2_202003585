@@ -38,17 +38,6 @@
         <robot>
             <nombre tipo="ChapinFighter" capacidad="50">Robocop</nombre>
         </robot>
-        <robot>
-            <nombre tipo="ChapinRescue">Ironman</nombre>
-        </robot>
-        <robot>
-            <nombre tipo="ChapinFighter" capacidad="10">MaxSteel</nombre>
-        </robot>
-        <robot>
-            <nombre tipo="ChapinRescue">OptimusPrime</nombre>
-        </robot>
-        <robot>
-            <nombre tipo="ChapinFighter" capacidad="100">Megatron</nombre>
-        </robot>
+        
     </robots>
 </configuracion>

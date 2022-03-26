@@ -1,6 +1,7 @@
 from NodoCiudad import NodoCiudad
 from os import system
 
+
 class ListaCiudad:
     def __init__(self):
         self.primero = None
@@ -32,7 +33,8 @@ class ListaCiudad:
         actual = self.primero
         print("-----Ciudades cargadas al sistema-----\n")
         while actual:
-            print(actual.id, ". ", actual.ciudad.name, " filas: ", actual.ciudad.rows, " col: ", actual.ciudad.columns, "\n")
+            print(actual.id, ". ", actual.ciudad.name, " filas: ", actual.ciudad.rows, " col: ", actual.ciudad.columns,
+                  "\n")
             actual = actual.siguiente
 
     def graficar(self, id):
@@ -44,62 +46,56 @@ class ListaCiudad:
                 break
             actual = actual.siguiente
 
-        columns = ciudad.columns
+        if ciudad is not None:
+            columns = ciudad.columns
 
-        contador_rows = 1
+            contador_rows = 1
 
+            cadena = '''  
+                digraph html {
+                labelloc="t";''' + '''
+                label=''' + '"' + ciudad.name + '";' + """
+                tabla [shape=none, margin=0, label=<
+                <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="4">\n"""
 
-        cadena = '''  
-    digraph html {
-    labelloc="t";''' + '''
-    label=''' + '"' + ciudad.name + '";' + """
-    tabla [shape=none, margin=0, label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="4">\n"""
-
-
-        cadena += "<TR>\n"
-        cadena += """<TD CELLPADDING="0.1"></TD>\n"""
-        for i in range(columns):
-            cadena += """<TD CELLPADDING="0.1">""" + str(i+1) + "</TD>\n"
-        cadena += "</TR>\n"
-
-
-
-
-        actual = ciudad.matriz.filas.primero
-        while actual:
-            nodo_interno_actual = actual.acceso
-            cadena += "<TR>"
-            cadena += """<TD CELLPADDING="0.1">""" + str(contador_rows) + "</TD>\n"
-            while nodo_interno_actual:
-                if nodo_interno_actual.celda.tipo == "intransitable":
-                    cadena += """<TD BGCOLOR="black">   </TD>\n"""
-                elif nodo_interno_actual.celda.tipo == "camino":
-                    cadena += """<TD>   </TD>\n"""
-                elif nodo_interno_actual.celda.tipo == "civil":
-                    cadena += """<TD BGCOLOR="#375bab">   </TD>\n"""
-                elif nodo_interno_actual.celda.tipo == "entrada":
-                    cadena += """<TD BGCOLOR="#3bab37">   </TD>\n"""
-                elif nodo_interno_actual.celda.tipo == "militar":
-                    cadena += """<TD BGCOLOR="#f71b1f">   </TD>\n"""
-                elif nodo_interno_actual.celda.tipo == "recurso":
-                    cadena += """<TD BGCOLOR="#706f6f">   </TD>\n"""
-
-                nodo_interno_actual = nodo_interno_actual.derecha
-
-            actual = actual.siguiente
-            contador_rows += 1
+            cadena += "<TR>\n"
+            cadena += """<TD CELLPADDING="0.1"></TD>\n"""
+            for i in range(columns):
+                cadena += """<TD CELLPADDING="0.1">""" + str(i + 1) + "</TD>\n"
             cadena += "</TR>\n"
 
+            actual = ciudad.matriz.filas.primero
+            while actual:
+                nodo_interno_actual = actual.acceso
+                cadena += "<TR>"
+                cadena += """<TD CELLPADDING="0.1">""" + str(contador_rows) + "</TD>\n"
+                while nodo_interno_actual:
+                    if nodo_interno_actual.celda.tipo == "intransitable":
+                        cadena += """<TD BGCOLOR="black">   </TD>\n"""
+                    elif nodo_interno_actual.celda.tipo == "camino":
+                        cadena += """<TD>   </TD>\n"""
+                    elif nodo_interno_actual.celda.tipo == "civil":
+                        cadena += """<TD BGCOLOR="#375bab">   </TD>\n"""
+                    elif nodo_interno_actual.celda.tipo == "entrada":
+                        cadena += """<TD BGCOLOR="#3bab37">   </TD>\n"""
+                    elif nodo_interno_actual.celda.tipo == "militar":
+                        cadena += """<TD BGCOLOR="#f71b1f">   </TD>\n"""
+                    elif nodo_interno_actual.celda.tipo == "recurso":
+                        cadena += """<TD BGCOLOR="#706f6f">   </TD>\n"""
 
-        cadena += "</TABLE>>];}\n"
-        nuevo_archivo = open("texto_dot.dot", "w")
-        nuevo_archivo.write(cadena)
-        nuevo_archivo.close()
+                    nodo_interno_actual = nodo_interno_actual.derecha
 
-        system("dot -Tpng " + "texto_dot.dot" + " -o " + "grafica.png")
-        system("xdg-open grafica.png")
+                actual = actual.siguiente
+                contador_rows += 1
+                cadena += "</TR>\n"
 
+            cadena += "</TABLE>>];}\n"
+            nuevo_archivo = open("texto_dot.dot", "w")
+            nuevo_archivo.write(cadena)
+            nuevo_archivo.close()
 
+            system("dot -Tpng " + "texto_dot.dot" + " -o " + "grafica.png")
+            system("xdg-open grafica.png")
 
-
+        else:
+            print("Ingrese un número de ciudad válido")

@@ -81,7 +81,7 @@ def leer_xml(ruta):
                 robot_nuevo = Robot(name, type_robot, 0)
                 lista_robots.insertar_robot(robot_nuevo)
                 #print("robot name: ", name, "type: ", type_robot)
-            else:
+            elif type_robot == "ChapinFighter":
                 # print("robot name: ", name, "type: ", type_robot, "capacity: ", capacity)
                 capacity = int(robot.find("nombre").get("capacidad"))
                 robot_nuevo = Robot(name, type_robot, capacity)
