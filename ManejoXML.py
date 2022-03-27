@@ -38,15 +38,15 @@ def leer_xml(ruta):
                     for caracter in texto_fila:
                         nueva_celda = None
                         if caracter == "*":
-                            nueva_celda = Celda("intransitable", False, 0, id_celda)
+                            nueva_celda = Celda("intransitable", False, 0, id_celda, False)
                         elif caracter == " ":
-                            nueva_celda = Celda("camino", True, 0, id_celda)
+                            nueva_celda = Celda("camino", True, 0, id_celda, False)
                         elif caracter == "E":
-                            nueva_celda = Celda("entrada", True, 0, id_celda)
+                            nueva_celda = Celda("entrada", True, 0, id_celda, False)
                         elif caracter == "C":
-                            nueva_celda = Celda("civil", False, 0, id_celda)
+                            nueva_celda = Celda("civil", False, 0, id_celda, False)
                         elif caracter == "R":
-                            nueva_celda = Celda("recurso", False, 0, id_celda)
+                            nueva_celda = Celda("recurso", False, 0, id_celda, False)
 
                         nodo_interno = NodoInterno(int(fila.get("numero")), contador_columna, nueva_celda)
                         matriz_ciudad.insertar_nodo_interno(nodo_interno)

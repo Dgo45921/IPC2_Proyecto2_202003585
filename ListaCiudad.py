@@ -1,6 +1,34 @@
 from NodoCiudad import NodoCiudad
 from os import system
 
+ciudad_seleccionada = None
+
+
+def count_recursos(nodo_ciudad):
+    contador = 0
+    actual = nodo_ciudad.ciudad.matriz.filas.primero
+    while actual:
+        actual2 = actual.acceso
+        while actual2:
+            if actual2.celda.tipo == "recurso":
+                contador += 1
+            actual2 = actual2.derecha
+        actual = actual.siguiente
+    return contador
+
+
+def count_civil(nodo_ciudad):
+    contador = 0
+    actual = nodo_ciudad.ciudad.matriz.filas.primero
+    while actual:
+        actual2 = actual.acceso
+        while actual2:
+            if actual2.celda.tipo == "civil":
+                contador += 1
+            actual2 = actual2.derecha
+        actual = actual.siguiente
+    return contador
+
 
 class ListaCiudad:
     def __init__(self):
@@ -73,7 +101,10 @@ class ListaCiudad:
                     if nodo_interno_actual.celda.tipo == "intransitable":
                         cadena += """<TD BGCOLOR="black">   </TD>\n"""
                     elif nodo_interno_actual.celda.tipo == "camino":
-                        cadena += """<TD>   </TD>\n"""
+                        if nodo_interno_actual.celda.visitada:
+                            cadena += """<TD BGCOLOR = "#fcf67e">   </TD>\n"""
+                        else:
+                            cadena += """<TD>   </TD>\n"""
                     elif nodo_interno_actual.celda.tipo == "civil":
                         cadena += """<TD BGCOLOR="#375bab">   </TD>\n"""
                     elif nodo_interno_actual.celda.tipo == "entrada":
@@ -99,3 +130,36 @@ class ListaCiudad:
 
         else:
             print("Ingrese un número de ciudad válido")
+
+    def muestra_ciudades_con_civiles(self):
+        cadena = ""
+        actual = self.primero
+        while actual:
+            cantidad_civiles = count_civil(actual)
+            cantidad_recursos = count_recursos(actual)
+            if cantidad_civiles >= 1:
+                name_ciudad = actual.ciudad.name
+                rows_ciudad = actual.ciudad.rows
+                columns_ciudad = actual.ciudad.columns
+                cadena += str(actual.id) + ". " + name_ciudad + " filas: " + str(rows_ciudad) + " columnas: " + str(columns_ciudad)
+                cadena += " unidades civiles: " + str(cantidad_civiles) + " recursos: " + str(cantidad_recursos) + "\n"
+
+            actual = actual.siguiente
+        print(cadena)
+
+    def muestra_ciudades_con_recursos(self):
+        cadena = ""
+        actual = self.primero
+        while actual:
+            cantidad_civiles = count_civil(actual)
+            cantidad_recursos = count_recursos(actual)
+            if cantidad_recursos >= 1:
+                name_ciudad = actual.ciudad.name
+                rows_ciudad = actual.ciudad.rows
+                columns_ciudad = actual.ciudad.columns
+                cadena += str(actual.id) + ". " + name_ciudad + " filas: " + str(rows_ciudad) + " columnas: " + str(
+                    columns_ciudad)
+                cadena += " unidades civiles: " + str(cantidad_civiles) + " recursos: " + str(cantidad_recursos) + "\n"
+
+            actual = actual.siguiente
+        print(cadena)

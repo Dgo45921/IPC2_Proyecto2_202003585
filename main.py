@@ -10,10 +10,11 @@ def menu_misiones():
         if ManejoXML.lista_robots.count_rescue() > 1:
             print("Robots de rescate disponibles:")
             ManejoXML.lista_robots.muestra_robots("ChapinRescue")
-            print("Ingrese una opción, si desea regresar ingrese cualquier caracter distinto de un número ")
+            print("Ingrese una opción, si desea regresar ingrese cualquier caracter distinto de un número")
             opcion2 = input()
             if opcion2.isdigit():
                 respuesta = ManejoXML.lista_robots.selecciona_rescate(int(opcion2))
+                selecciona_ciudad("rescate")
                 if not respuesta:
                     print("Ingrese uno de los robots mostrados")
                     menu_misiones()
@@ -29,10 +30,11 @@ def menu_misiones():
         if ManejoXML.lista_robots.count_fighter() > 1:
             print("Robots de combate disponibles:")
             ManejoXML.lista_robots.muestra_robots("ChapinFighter")
-            print("Ingrese una opción, si desea regresar ingrese cualquier caracter distinto de un número ")
+            print("Ingrese una opción, si desea regresar ingrese cualquier caracter distinto de un número")
             opcion2 = input()
             if opcion2.isdigit():
                 respuesta = ManejoXML.lista_robots.selecciona_pelea(int(opcion2))
+                selecciona_ciudad("pelea")
                 if not respuesta:
                     print("Ingrese uno de los robots mostrados")
                     menu_misiones()
@@ -48,6 +50,18 @@ def menu_misiones():
     else:
         print("Ingrese una opción válida")
         menu_misiones()
+
+
+def selecciona_ciudad(type):
+    if type == "rescate":
+        ManejoXML.lista_de_ciudades.muestra_ciudades_con_civiles()
+        print("Seleccione una ciudad ingresando el número al lado de esta")
+        opcion = input()
+
+    else:
+        ManejoXML.lista_de_ciudades.muestra_ciudades_con_recursos()
+        print("")
+
 
 
 def main():

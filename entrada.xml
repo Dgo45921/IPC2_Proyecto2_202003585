@@ -41,6 +41,16 @@
             <unidadMilitar fila="2" columna="5">10</unidadMilitar>
             <unidadMilitar fila="5" columna="5">20</unidadMilitar>
         </ciudad>
+        
+        <ciudad>
+            <nombre filas="5" columnas="5">Pueblo x</nombre>
+            <fila numero="1">"*****"</fila>
+            <fila numero="2">"     "</fila>
+            <fila numero="3">"C***E"</fila>
+            <fila numero="5">"*  **"</fila>
+            <fila numero="4">"*****"</fila>
+            
+        </ciudad>
     </listaCiudades>
     <robots>
         <robot>
