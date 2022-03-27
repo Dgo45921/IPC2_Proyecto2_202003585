@@ -55,12 +55,28 @@ def menu_misiones():
 def selecciona_ciudad(type):
     if type == "rescate":
         ManejoXML.lista_de_ciudades.muestra_ciudades_con_civiles()
-        print("Seleccione una ciudad ingresando el número al lado de esta")
+        print("Seleccione una ciudad ingresando el número al lado de esta, "
+              "ingrese cualquier caracter distinto de un número para regresar")
         opcion = input()
+        if opcion.isdigit():
+            opcion = int(opcion)
+            ManejoXML.lista_de_ciudades.selecciona_ciudad_con_civiles(opcion)
+
+        else:
+            menu_misiones()
 
     else:
         ManejoXML.lista_de_ciudades.muestra_ciudades_con_recursos()
-        print("")
+        print("Seleccione una ciudad ingresando el número al lado de esta, "
+              "ingrese cualquier caracter distinto de un número para regresar")
+        opcion = input()
+        if opcion.isdigit():
+            opcion = int(opcion)
+            ManejoXML.lista_de_ciudades.selecciona_ciudad_con_recursos(opcion)
+
+        else:
+            menu_misiones()
+
 
 
 

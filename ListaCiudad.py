@@ -2,6 +2,7 @@ from NodoCiudad import NodoCiudad
 from os import system
 
 ciudad_seleccionada = None
+celda_seleccionada = None
 
 
 def count_recursos(nodo_ciudad):
@@ -28,6 +29,93 @@ def count_civil(nodo_ciudad):
             actual2 = actual2.derecha
         actual = actual.siguiente
     return contador
+
+
+def encuentra_unico_civil(nodo_ciudad):
+    global celda_seleccionada
+    celda_seleccionada = None
+    actual = nodo_ciudad.ciudad.matriz.filas.primero
+    while actual:
+        actual2 = actual.acceso
+        while actual2:
+            if actual2.celda.tipo == "civil":
+                celda_seleccionada = actual2
+                break
+            actual2 = actual2.derecha
+
+        actual = actual.siguiente
+    print("La unidad civil seleccionado está en la fila: ", celda_seleccionada.x, " y en la columna: ", celda_seleccionada.y)
+
+
+def encuentra_unico_recurso(nodo_ciudad):
+    global celda_seleccionada
+    celda_seleccionada = None
+    actual = nodo_ciudad.ciudad.matriz.filas.primero
+    while actual:
+        actual2 = actual.acceso
+        while actual2:
+            if actual2.celda.tipo == "recurso":
+                celda_seleccionada = actual2
+                break
+            actual2 = actual2.derecha
+
+        actual = actual.siguiente
+    print("El recurso seleccionado está en la fila: ", celda_seleccionada.x, " y en la columna: ", celda_seleccionada.y)
+
+
+def encuentra_varios_recursos(nodo_ciudad):
+    cadena = ""
+    actual = nodo_ciudad.ciudad.matriz.filas.primero
+    while actual:
+        actual2 = actual.acceso
+        while actual2:
+            if actual2.celda.tipo == "recurso":
+                cadena += str(actual2.celda.id) + ". fila: " + str(actual2.x) + " columna: " + str(actual2.y) + "\n"
+            actual2 = actual2.derecha
+        actual = actual.siguiente
+    print("Seleccione una celda de recurso ingresando el número al lado de esta")
+    print(cadena)
+    opcion = input()
+    if opcion.isdigit():
+        opcion = int(opcion)
+        buscar_celda(opcion, "recurso")
+
+
+def encuentra_varios_civiles(nodo_ciudad):
+    cadena = ""
+    actual = nodo_ciudad.ciudad.matriz.filas.primero
+    while actual:
+        actual2 = actual.acceso
+        while actual2:
+            if actual2.celda.tipo == "civil":
+                cadena += str(actual2.celda.id) + ". fila: " + str(actual2.x) + " columna: " + str(actual2.y) + "\n"
+            actual2 = actual2.derecha
+        actual = actual.siguiente
+    print("Seleccione una celda de recurso ingresando el número al lado de esta")
+    print(cadena)
+    opcion = input()
+    if opcion.isdigit():
+        opcion = int(opcion)
+        buscar_celda(opcion, "civil")
+
+
+def buscar_celda(id, type):
+    global celda_seleccionada, ciudad_seleccionada
+    celda_seleccionada = None
+    actual = ciudad_seleccionada.matriz.filas.primero
+    while actual:
+        actual2 = actual.acceso
+        while actual2:
+            if actual2.celda.id == id and actual2.celda.tipo == "recurso" == type:
+                celda_seleccionada = actual2
+            elif actual2.celda.id == id and actual2.celda.tipo == "civil" == type:
+                celda_seleccionada = actual2
+            actual2 = actual2.derecha
+        actual = actual.siguiente
+    if celda_seleccionada is not None:
+        print("La celda seleccionada está en la fila: ", celda_seleccionada.x, " y columna: ", celda_seleccionada.y)
+    else:
+        print("Verifique la celda ingresada")
 
 
 class ListaCiudad:
@@ -141,7 +229,8 @@ class ListaCiudad:
                 name_ciudad = actual.ciudad.name
                 rows_ciudad = actual.ciudad.rows
                 columns_ciudad = actual.ciudad.columns
-                cadena += str(actual.id) + ". " + name_ciudad + " filas: " + str(rows_ciudad) + " columnas: " + str(columns_ciudad)
+                cadena += str(actual.id) + ". " + name_ciudad + " filas: " + str(rows_ciudad) + " columnas: " + str(
+                    columns_ciudad)
                 cadena += " unidades civiles: " + str(cantidad_civiles) + " recursos: " + str(cantidad_recursos) + "\n"
 
             actual = actual.siguiente
@@ -163,3 +252,42 @@ class ListaCiudad:
 
             actual = actual.siguiente
         print(cadena)
+
+    def selecciona_ciudad_con_recursos(self, id):
+        global ciudad_seleccionada
+        ciudad_seleccionada = None
+        nodo_ciudad_seleccionado = None
+        actual = self.primero
+        while actual:
+            if actual.id == id:
+                nodo_ciudad_seleccionado = actual
+                break
+            actual = actual.siguiente
+        ciudad_seleccionada = nodo_ciudad_seleccionado.ciudad
+        if nodo_ciudad_seleccionado is not None:
+            if count_recursos(nodo_ciudad_seleccionado) > 1:
+                encuentra_varios_recursos(nodo_ciudad_seleccionado)
+            elif count_recursos(nodo_ciudad_seleccionado) == 1:
+                encuentra_unico_recurso(nodo_ciudad_seleccionado)
+        else:
+            print("Seleccione únicamente las ciudades que se le fueron mostradas")
+
+    def selecciona_ciudad_con_civiles(self, id):
+        global ciudad_seleccionada
+        ciudad_seleccionada = None
+        nodo_ciudad_seleccionado = None
+        actual = self.primero
+        while actual:
+            if actual.id == id:
+                nodo_ciudad_seleccionado = actual
+                break
+            actual = actual.siguiente
+        ciudad_seleccionada = nodo_ciudad_seleccionado.ciudad
+        if nodo_ciudad_seleccionado is not None:
+            if count_civil(nodo_ciudad_seleccionado) > 1:
+                encuentra_varios_civiles(nodo_ciudad_seleccionado)
+            elif count_civil(nodo_ciudad_seleccionado) == 1:
+                encuentra_unico_civil(nodo_ciudad_seleccionado)
+        else:
+            print("Seleccione únicamente las ciudades que se le fueron mostradas")
+
