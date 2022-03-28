@@ -1,8 +1,12 @@
 from NodoCiudad import NodoCiudad
 from os import system
+import ListaRobot
+from copy import deepcopy
+import sys
 
 ciudad_seleccionada = None
 celda_seleccionada = None
+robot_de_combate_actual = None
 
 
 def count_recursos(nodo_ciudad):
@@ -44,7 +48,9 @@ def encuentra_unico_civil(nodo_ciudad):
             actual2 = actual2.derecha
 
         actual = actual.siguiente
-    print("La unidad civil seleccionado está en la fila: ", celda_seleccionada.x, " y en la columna: ", celda_seleccionada.y)
+    print("La unidad civil seleccionado está en la fila: ", celda_seleccionada.x, " y en la columna: ",
+          celda_seleccionada.y)
+    existe_camino_rescate()
 
 
 def encuentra_unico_recurso(nodo_ciudad):
@@ -61,6 +67,7 @@ def encuentra_unico_recurso(nodo_ciudad):
 
         actual = actual.siguiente
     print("El recurso seleccionado está en la fila: ", celda_seleccionada.x, " y en la columna: ", celda_seleccionada.y)
+    existe_camino_recurso()
 
 
 def encuentra_varios_recursos(nodo_ciudad):
@@ -99,6 +106,457 @@ def encuentra_varios_civiles(nodo_ciudad):
         buscar_celda(opcion, "civil")
 
 
+def limpia_matriz():
+    matriz = ciudad_seleccionada.matriz
+    actual = matriz.filas.primero
+    while actual:
+        actual2 = actual.acceso
+        while actual2:
+            actual2.celda.visitada = False
+            actual2 = actual2.derecha
+        actual = actual.siguiente
+
+
+def existe_camino_rescate():
+    sys.setrecursionlimit(10000)
+    flag = False
+    control1 = True
+    control2 = True
+    matriz = ciudad_seleccionada.matriz
+    robot = ListaRobot.robot_seleccionado
+    if robot.tipo == "ChapinRescue":
+        print("se hace dfs con robot de rescate")
+        actual = matriz.filas.primero
+        while actual and control1:
+            actual2 = actual.acceso
+            while actual2 and control2:
+                if actual2.celda.tipo == "entrada" and not actual2.celda.visitada:
+                    limpia_matriz()
+                    print("---CELDA ENTRADA---")
+                    print("fila: ", actual2.x, " columna: ", actual2.y)
+                    if check_camino_rescate(actual2):
+                        flag = True
+                        control2 = False
+                        control1 = False
+                        break
+                actual2 = actual2.derecha
+            actual = actual.siguiente
+        if flag:
+            print("Se encontro un camino")
+        else:
+            print("mision imposible")
+
+def existe_camino_recurso():
+    global robot_de_combate_actual
+    sys.setrecursionlimit(10000)
+    flag = False
+    control1 = True
+    control2 = True
+    matriz = ciudad_seleccionada.matriz
+    robot_de_combate_actual = deepcopy(ListaRobot.robot_seleccionado)
+    if robot_de_combate_actual.tipo == "ChapinFighter":
+        print("se hace dfs con robot de pelea")
+        actual = matriz.filas.primero
+        while actual and control1:
+            actual2 = actual.acceso
+            while actual2 and control2:
+                if actual2.celda.tipo == "entrada" and not actual2.celda.visitada:
+                    limpia_matriz()
+                    robot_de_combate_actual.capacidad = ListaRobot.robot_seleccionado.capacidad
+                    print("---CELDA ENTRADA---")
+                    print("fila: ", actual2.x, " columna: ", actual2.y)
+                    if check_camino_recurso(actual2):
+                        flag = True
+                        control2 = False
+                        control1 = False
+                        break
+                actual2 = actual2.derecha
+            actual = actual.siguiente
+        if flag:
+            print("Se encontro un camino")
+        else:
+            print("mision imposible")
+
+
+
+def check_camino_rescate(nodo_celda):
+    if nodo_celda.celda.tipo != "intransitable" and nodo_celda.celda.tipo != "militar" and nodo_celda.celda.tipo != "recurso" and not nodo_celda.celda.visitada:
+        nodo_celda.celda.visitada = True
+        print("Estoy en la fila: ", nodo_celda.x, " y en la columna: ", nodo_celda.y)
+        if nodo_celda.x == celda_seleccionada.x and nodo_celda.y == celda_seleccionada.y:
+            return True
+
+            # clasificar el tipo de celda que buscamos
+
+        if nodo_celda.x == 1 and nodo_celda.y == 1:
+            # esquina superior izquierda
+            derecha = check_camino_rescate(nodo_celda.derecha)
+            if derecha:
+                return True
+            abajo = check_camino_rescate(nodo_celda.abajo)
+            if abajo:
+                return True
+
+        elif nodo_celda.x == 1 and nodo_celda.y == ciudad_seleccionada.columns:
+            # esquina superior derecha
+            izquierda = check_camino_rescate(nodo_celda.izquierda)
+            if izquierda:
+                return True
+            abajo = check_camino_rescate(nodo_celda.abajo)
+            if abajo:
+                return True
+
+        elif nodo_celda.x == ciudad_seleccionada.rows and nodo_celda.y == 1:
+            # esquina inferior izquierda
+            derecha = check_camino_rescate(nodo_celda.derecha)
+            if derecha:
+                return True
+            arriba = check_camino_rescate(nodo_celda.arriba)
+            if arriba:
+                return True
+
+        elif nodo_celda.x == ciudad_seleccionada.rows and nodo_celda.y == ciudad_seleccionada.columns:
+            # esquina inferior derecha
+            izquierda = check_camino_rescate(nodo_celda.izquierda)
+            if izquierda:
+                return True
+            arriba = check_camino_rescate(nodo_celda.arriba)
+            if arriba:
+                return True
+        elif nodo_celda.x == 1 and nodo_celda.y != ciudad_seleccionada.columns and nodo_celda.y != 1:
+            # se encuentra en la primera fila
+            derecha = check_camino_rescate(nodo_celda.derecha)
+            if derecha:
+                return True
+            izquierda = check_camino_rescate(nodo_celda.izquierda)
+            if izquierda:
+                return True
+            abajo = check_camino_rescate(nodo_celda.abajo)
+            if abajo:
+                return True
+        elif nodo_celda.x == ciudad_seleccionada.rows and nodo_celda.y != ciudad_seleccionada.columns and nodo_celda.y != 1:
+            # se encyentra en la ultima fila
+            derecha = check_camino_rescate(nodo_celda.derecha)
+            if derecha:
+                return True
+            izquierda = check_camino_rescate(nodo_celda.izquierda)
+            if izquierda:
+                return True
+            arriba = check_camino_rescate(nodo_celda.arriba)
+            if arriba:
+                return True
+        elif nodo_celda.y == 1 and nodo_celda.x != 1 and nodo_celda.x != ciudad_seleccionada.rows:
+            # se encuenta en la primera columna
+            derecha = check_camino_rescate(nodo_celda.derecha)
+            if derecha:
+                return True
+            abajo = check_camino_rescate(nodo_celda.abajo)
+            if abajo:
+                return True
+            arriba = check_camino_rescate(nodo_celda.arriba)
+            if arriba:
+                return True
+        elif nodo_celda.y == ciudad_seleccionada.columns and nodo_celda.x != 1 and nodo_celda.x != ciudad_seleccionada.rows:
+            # se encuentra el la ultima columna
+            izquierda = check_camino_rescate(nodo_celda.izquierda)
+            if izquierda:
+                return True
+            abajo = check_camino_rescate(nodo_celda.abajo)
+            if abajo:
+                return True
+            arriba = check_camino_rescate(nodo_celda.arriba)
+            if arriba:
+                return True
+        else:
+            # es una celda intermedia
+            arriba = check_camino_rescate(nodo_celda.arriba)
+            if arriba:
+                return True
+            abajo = check_camino_rescate(nodo_celda.abajo)
+            if abajo:
+                return True
+            izquierda = check_camino_rescate(nodo_celda.izquierda)
+            if izquierda:
+                return True
+            derecha = check_camino_rescate(nodo_celda.derecha)
+            if derecha:
+                return True
+        return False
+
+
+def check_camino_recurso(nodo_celda):
+    if nodo_celda.celda.tipo != "intransitable" and not nodo_celda.celda.visitada:
+        if nodo_celda.celda.tipo == "militar":
+            if nodo_celda.celda.capacidad < robot_de_combate_actual.capacidad:
+                nodo_celda.celda.visitada = True
+                robot_de_combate_actual.capacidad = robot_de_combate_actual.capacidad - nodo_celda.celda.capacidad
+        elif nodo_celda.celda.tipo != "intransitable":
+            nodo_celda.celda.visitada = True
+        print("Estoy en la fila: ", nodo_celda.x, " y en la columna: ", nodo_celda.y)
+        if nodo_celda.x == celda_seleccionada.x and nodo_celda.y == celda_seleccionada.y:
+            return True
+
+            # clasificar el tipo de celda que buscamos
+
+        if nodo_celda.x == 1 and nodo_celda.y == 1:
+            # esquina superior izquierda
+            derecha = check_camino_recurso(nodo_celda.derecha)
+            if derecha:
+                return True
+            abajo = check_camino_recurso(nodo_celda.abajo)
+            if abajo:
+                return True
+
+        elif nodo_celda.x == 1 and nodo_celda.y == ciudad_seleccionada.columns:
+            # esquina superior derecha
+            izquierda = check_camino_recurso(nodo_celda.izquierda)
+            if izquierda:
+                return True
+            abajo = check_camino_recurso(nodo_celda.abajo)
+            if abajo:
+                return True
+
+        elif nodo_celda.x == ciudad_seleccionada.rows and nodo_celda.y == 1:
+            # esquina inferior izquierda
+            derecha = check_camino_recurso(nodo_celda.derecha)
+            if derecha:
+                return True
+            arriba = check_camino_recurso(nodo_celda.arriba)
+            if arriba:
+                return True
+
+        elif nodo_celda.x == ciudad_seleccionada.rows and nodo_celda.y == ciudad_seleccionada.columns:
+            # esquina inferior derecha
+            izquierda = check_camino_recurso(nodo_celda.izquierda)
+            if izquierda:
+                return True
+            arriba = check_camino_recurso(nodo_celda.arriba)
+            if arriba:
+                return True
+        elif nodo_celda.x == 1 and nodo_celda.y != ciudad_seleccionada.columns and nodo_celda.y != 1:
+            # se encuentra en la primera fila
+            derecha = check_camino_recurso(nodo_celda.derecha)
+            if derecha:
+                return True
+            izquierda = check_camino_recurso(nodo_celda.izquierda)
+            if izquierda:
+                return True
+            abajo = check_camino_recurso(nodo_celda.abajo)
+            if abajo:
+                return True
+        elif nodo_celda.x == ciudad_seleccionada.rows and nodo_celda.y != ciudad_seleccionada.columns and nodo_celda.y != 1:
+            # se encyentra en la ultima fila
+            derecha = check_camino_recurso(nodo_celda.derecha)
+            if derecha:
+                return True
+            izquierda = check_camino_recurso(nodo_celda.izquierda)
+            if izquierda:
+                return True
+            arriba = check_camino_recurso(nodo_celda.arriba)
+            if arriba:
+                return True
+        elif nodo_celda.y == 1 and nodo_celda.x != 1 and nodo_celda.x != ciudad_seleccionada.rows:
+            # se encuenta en la primera columna
+            # caso 1
+            if nodo_celda.y == celda_seleccionada.y and nodo_celda.x > celda_seleccionada.x:
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+            # caso 6
+            elif nodo_celda.y == celda_seleccionada.y and nodo_celda.x < celda_seleccionada.x:
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+            # caso 2
+            elif nodo_celda.x > celda_seleccionada.x and nodo_celda.y < celda_seleccionada.y:
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+            # caso 4
+            elif nodo_celda.x == celda_seleccionada.x and nodo_celda.y < celda_seleccionada.y:
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+            # caso 7
+            elif nodo_celda.x < celda_seleccionada.x and nodo_celda.y < celda_seleccionada.y:
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+
+        elif nodo_celda.y == ciudad_seleccionada.columns and nodo_celda.x != 1 and nodo_celda.x != ciudad_seleccionada.rows:
+            # se encuentra el la ultima columna
+            izquierda = check_camino_recurso(nodo_celda.izquierda)
+            if izquierda:
+                return True
+            abajo = check_camino_recurso(nodo_celda.abajo)
+            if abajo:
+                return True
+            arriba = check_camino_recurso(nodo_celda.arriba)
+            if arriba:
+                return True
+        else:
+            # es una celda intermedia
+            # caso 2
+            if nodo_celda.x > celda_seleccionada.x and nodo_celda.y < celda_seleccionada.y:
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True #
+            # caso 4
+            elif nodo_celda.x == celda_seleccionada.x and nodo_celda.y < celda_seleccionada.y:
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+            # caso 7
+            elif nodo_celda.x < celda_seleccionada.x and nodo_celda.y < celda_seleccionada.y:
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+            # caso 0
+            elif nodo_celda.x > celda_seleccionada.x and nodo_celda.y > celda_seleccionada.y:
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+            # caso 3
+            elif nodo_celda.x == celda_seleccionada.x and nodo_celda.y > celda_seleccionada.y:
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+            # caso 5
+            elif nodo_celda.x < celda_seleccionada.x and nodo_celda.y > celda_seleccionada.y:
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+            # caso 1
+            elif nodo_celda.y == celda_seleccionada.y and nodo_celda.x > celda_seleccionada.x:
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+            # caso 6
+            elif nodo_celda.y == celda_seleccionada.y and nodo_celda.x < celda_seleccionada.x:
+                abajo = check_camino_recurso(nodo_celda.abajo)
+                if abajo:
+                    return True
+                izquierda = check_camino_recurso(nodo_celda.izquierda)
+                if izquierda:
+                    return True
+                derecha = check_camino_recurso(nodo_celda.derecha)
+                if derecha:
+                    return True
+                arriba = check_camino_recurso(nodo_celda.arriba)
+                if arriba:
+                    return True
+
+        return False
+
+
 def buscar_celda(id, type):
     global celda_seleccionada, ciudad_seleccionada
     celda_seleccionada = None
@@ -112,8 +570,12 @@ def buscar_celda(id, type):
                 celda_seleccionada = actual2
             actual2 = actual2.derecha
         actual = actual.siguiente
-    if celda_seleccionada is not None:
+    if celda_seleccionada is not None and celda_seleccionada.celda.tipo == "civil":
         print("La celda seleccionada está en la fila: ", celda_seleccionada.x, " y columna: ", celda_seleccionada.y)
+        existe_camino_rescate()
+    elif celda_seleccionada is not None and celda_seleccionada.celda.tipo == "recurso":
+        print("La celda seleccionada está en la fila: ", celda_seleccionada.x, " y columna: ", celda_seleccionada.y)
+        existe_camino_recurso()
     else:
         print("Verifique la celda ingresada")
 
@@ -265,10 +727,13 @@ class ListaCiudad:
             actual = actual.siguiente
         ciudad_seleccionada = nodo_ciudad_seleccionado.ciudad
         if nodo_ciudad_seleccionado is not None:
-            if count_recursos(nodo_ciudad_seleccionado) > 1:
+            cantidad_recursos = count_recursos(nodo_ciudad_seleccionado)
+            if cantidad_recursos > 1:
                 encuentra_varios_recursos(nodo_ciudad_seleccionado)
-            elif count_recursos(nodo_ciudad_seleccionado) == 1:
+            elif cantidad_recursos == 1:
                 encuentra_unico_recurso(nodo_ciudad_seleccionado)
+            elif cantidad_recursos == 0:
+                print("Seleccione únicamente las ciudades que se le fueron mostradas")
         else:
             print("Seleccione únicamente las ciudades que se le fueron mostradas")
 
@@ -284,10 +749,13 @@ class ListaCiudad:
             actual = actual.siguiente
         ciudad_seleccionada = nodo_ciudad_seleccionado.ciudad
         if nodo_ciudad_seleccionado is not None:
-            if count_civil(nodo_ciudad_seleccionado) > 1:
+            cantidad_civil = count_civil(nodo_ciudad_seleccionado)
+            if cantidad_civil > 1:
                 encuentra_varios_civiles(nodo_ciudad_seleccionado)
-            elif count_civil(nodo_ciudad_seleccionado) == 1:
+            elif cantidad_civil == 1:
                 encuentra_unico_civil(nodo_ciudad_seleccionado)
+            elif cantidad_civil == 0:
+                print("Seleccione únicamente las ciudades que se le fueron mostradas")
+
         else:
             print("Seleccione únicamente las ciudades que se le fueron mostradas")
-

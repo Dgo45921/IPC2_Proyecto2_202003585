@@ -18,13 +18,13 @@
             <fila numero="13">"*** **  E ** *R ****"</fila>
             <fila numero="14">"*** *****         C*"</fila>
             <fila numero="15">"*** *****C***** ****"</fila>
-            <unidadMilitar fila="5" columna="14">20</unidadMilitar>
-            <unidadMilitar fila="5" columna="19">20</unidadMilitar>
-            <unidadMilitar fila="5" columna="20">20</unidadMilitar>
+            <unidadMilitar fila="5" columna="10">20</unidadMilitar>
+            <unidadMilitar fila="5" columna="4">20</unidadMilitar>
+            <unidadMilitar fila="2" columna="11">20</unidadMilitar>
             <unidadMilitar fila="8" columna="16">20</unidadMilitar>
             <unidadMilitar fila="11" columna="7">20</unidadMilitar>
             <unidadMilitar fila="11" columna="15">20</unidadMilitar>
-            <unidadMilitar fila="14" columna="10">20</unidadMilitar>
+            
         </ciudad>
         <ciudad>
             <nombre filas="10" columnas="10">CiudadGuate</nombre>
@@ -46,7 +46,7 @@
             <nombre filas="5" columnas="5">Pueblo x</nombre>
             <fila numero="1">"*****"</fila>
             <fila numero="2">"     "</fila>
-            <fila numero="3">"R***E"</fila>
+            <fila numero="3">"C***E"</fila>
             <fila numero="5">"*  **"</fila>
             <fila numero="4">"*****"</fila>
             
