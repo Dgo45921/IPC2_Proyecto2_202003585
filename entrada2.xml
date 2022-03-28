@@ -36,7 +36,7 @@
     </listaCiudades>
     <robots>
         <robot>
-            <nombre tipo="ChapinFighter" capacidad="50">Robocop</nombre>
+            <nombre tipo="ChapinFighter" capacidad="150">Robocop</nombre>
         </robot>
         
     </robots>
