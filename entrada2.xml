@@ -2,19 +2,19 @@
 <configuracion>
     <listaCiudades>
         <ciudad>
-            <nombre filas="10" columnas="20">CiudadGotica</nombre>
-            <fila numero="1">"********************"</fila>
-            <fila numero="2">"*** **             *"</fila>
-            <fila numero="3">"*** *****E*****C****"</fila>
-            <fila numero="4">"*** ***** ***** ***R"</fila>
-            <fila numero="5">"E                   "</fila>
-            <fila numero="6">"*** ** ** ** ** ****"</fila>
+            <nombre filas="10" columnas="20">Ciudad zero</nombre>
+            <fila numero="1">"R   R**********    R"</fila>
+            <fila numero="2">"R *E   ***  **   ***"</fila>
+            <fila numero="3">"*** *R         C****"</fila>
+            <fila numero="4">"C **   *  *****    R"</fila>
+            <fila numero="5">"E     **    ***     "</fila>
+            <fila numero="6">"*** ** E* ** ** ****"</fila>
             <fila numero="7">"*** ** ** ** ** **R*"</fila>
-            <fila numero="8">"*                  *"</fila>
-            <fila numero="9">"*** ** ** ** ** ****"</fila>
-            <fila numero="10">"*** ** ** ** ** ****"</fila>
-            <unidadMilitar fila="5" columna="14">20</unidadMilitar>
-            <unidadMilitar fila="5" columna="19">20</unidadMilitar>
+            <fila numero="8">"   C   ****   *     "</fila>
+            <fila numero="9">" ** ** ** ** ** *** "</fila>
+            <fila numero="10">"R**R**************R "</fila>
+            <unidadMilitar fila="3" columna="11">10</unidadMilitar>
+            <unidadMilitar fila="3" columna="13">20</unidadMilitar>
             <unidadMilitar fila="5" columna="20">20</unidadMilitar>
             <unidadMilitar fila="1" columna="16">20</unidadMilitar>
         </ciudad>

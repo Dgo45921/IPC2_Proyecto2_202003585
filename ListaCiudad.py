@@ -152,6 +152,7 @@ def existe_camino_rescate():
 
         else:
             print("mision imposible")
+            limpia_matriz()
 
 
 def existe_camino_recurso():
@@ -187,6 +188,7 @@ def existe_camino_recurso():
             FileWriter.pdf_combate(robot_de_combate_actual, celda_seleccionada)
         else:
             print("mision imposible")
+            limpia_matriz()
 
 
 def check_camino_rescate(nodo_celda):
@@ -665,7 +667,7 @@ def check_camino_rescate(nodo_celda):
 
 
 def check_camino_recurso(nodo_celda):
-    if nodo_celda.celda.tipo != "intransitable" and not nodo_celda.celda.visitada:
+    if nodo_celda.celda.tipo != "intransitable" and not nodo_celda.celda.visitada and nodo_celda.celda.tipo != "recurso":
         if nodo_celda.celda.tipo == "militar":
             # print("la vida del robot es: ", robot_de_combate_actual.capacidad)
             if nodo_celda.celda.capacidad < robot_de_combate_actual.capacidad:
@@ -674,10 +676,10 @@ def check_camino_recurso(nodo_celda):
             else:
                 return False
 
-        elif nodo_celda.celda.tipo != "intransitable":
-            nodo_celda.celda.visitada = True
+
+        nodo_celda.celda.visitada = True
         print("Estoy en la fila: ", nodo_celda.x, " y en la columna: ", nodo_celda.y)
-        if nodo_celda.x == celda_seleccionada.x and nodo_celda.y == celda_seleccionada.y:
+        if nodo_celda.x == celda_seleccionada.x-1 and nodo_celda.y == celda_seleccionada.y or nodo_celda.x == celda_seleccionada.x+1 and nodo_celda.y == celda_seleccionada.y or nodo_celda.x == celda_seleccionada.x and nodo_celda.y == celda_seleccionada.y+1 or nodo_celda.x == celda_seleccionada.x and nodo_celda.y == celda_seleccionada.y-1:
             return True
 
             # clasificar el tipo de celda que buscamos
