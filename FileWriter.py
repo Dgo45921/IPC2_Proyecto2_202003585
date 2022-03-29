@@ -1,5 +1,6 @@
 from fpdf import FPDF, HTMLMixin
 import ListaRobot
+import os
 from os import system
 
 def pdf_combate(robot, celda):
@@ -22,7 +23,10 @@ def pdf_combate(robot, celda):
     pdf.cell(19, 1, "CAPACIDAD DE COMBATE INICIAL: " + str(ListaRobot.robot_seleccionado.capacidad), align="C", ln=True)
     pdf.cell(19, 1, "CAPACIDAD DE COMBATE FINAL: " + str(robot.capacidad), align="C", ln=True)
     pdf.output('reporte.pdf', 'F')
-    system("xdg-open reporte.pdf")
+    if os.name == "nt":
+        os.startfile("reporte.pdf")
+    else:
+        system("xdg-open reporte.pdf")
 
 
 def pdf_rescate(robot, celda):
@@ -43,5 +47,8 @@ def pdf_rescate(robot, celda):
     pdf.cell(19, 1, "UNIDAD RESCATADA: " + str(celda.x) + ", " + str(celda.y), align="C", ln=True)
     pdf.cell(19, 1, "ROBOT UTILIZADO: " + robot.name, align="C", ln=True)
     pdf.output('reporte.pdf', 'F')
-    system("xdg-open reporte.pdf")
+    if os.name == "nt":
+        os.startfile("reporte.pdf")
+    else:
+        system("xdg-open reporte.pdf")
 

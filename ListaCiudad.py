@@ -1,5 +1,6 @@
 from NodoCiudad import NodoCiudad
 from os import system
+import os
 import ListaRobot
 from copy import deepcopy
 import sys
@@ -1332,7 +1333,11 @@ class ListaCiudad:
             nuevo_archivo.close()
 
             system("dot -Tpng " + "texto_dot.dot" + " -o " + "grafica.png")
-            system("xdg-open grafica.png")
+            if os.name == "nt":
+                os.startfile("grafica.png")
+            else:
+                system("xdg-open grafica.png")
+
 
         else:
             print("Ingrese un número de ciudad válido")
